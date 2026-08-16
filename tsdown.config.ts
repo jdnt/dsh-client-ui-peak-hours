@@ -9,8 +9,9 @@
  * build preset (scripts/sync-shared.mjs and its tsdown helper) instead of
  * maintaining a per-package copy.
  */
+import { existsSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
-import { dirname, resolve } from 'node:path'
+import { dirname, resolve, sep } from 'node:path'
 import { transform } from 'lightningcss'
 import type { UserConfig } from 'tsdown'
 
@@ -26,13 +27,27 @@ const CLIENT_EXTERNALS = [
 const CSS_VIRTUAL_PREFIX = '\0dsh-css:'
 const CSS_VIRTUAL_SUFFIX = '.mjs'
 
+/**
+ * Resolve a compiled import's asset path. tsc emits JS to lib/types but does
+ * not copy .module.css there, so a `./x.module.css` import in a lib/types file
+ * must map back to the src tree when the emitted path does not exist.
+ */
+function sourceAssetPath(source: string, importer: string): string {
+  const emitted = resolve(dirname(importer), source)
+  if (existsSync(emitted)) return emitted
+  const marker = `${sep}lib${sep}types${sep}`
+  const boundary = emitted.indexOf(marker)
+  if (boundary < 0) return emitted
+  return resolve(emitted.slice(0, boundary), 'src', emitted.slice(boundary + marker.length))
+}
+
 /** Compile CSS Modules into a hashed class map plus one self-injecting <style> tag. */
 function cssModulesPlugin(): NonNullable<UserConfig['plugins']> {
   return [{
     name: 'peak-hours-css-modules-inline',
     resolveId(source: string, importer: string | undefined) {
       if (!source.endsWith('.module.css')) return null
-      const abs = importer !== undefined ? resolve(dirname(importer), source) : source
+      const abs = importer !== undefined ? sourceAssetPath(source, importer) : source
       return CSS_VIRTUAL_PREFIX + abs + CSS_VIRTUAL_SUFFIX
     },
     async load(virtualId: string) {
@@ -62,15 +77,20 @@ function cssModulesPlugin(): NonNullable<UserConfig['plugins']> {
   }]
 }
 
-/** Node-half library: ESM, deps external, emitted beside the client bundle. */
+/** Node-half library: ESM, platform packages external, emitted beside the client bundle. */
 const nodeLibrary: UserConfig = {
   name: ID,
   entry: ['lib/types/index.js', 'lib/types/invariant.js'],
   outDir: 'lib',
   format: ['esm'],
   platform: 'node',
+  fixedExtension: false,
   dts: false,
   clean: false,
+  // The dsh platform supplies every @deepseek-ai/* package at runtime; keep
+  // them external (matching the family's node-half output) instead of inlining
+  // a duplicate settings/cordis copy.
+  external: [/^@deepseek-ai\//],
 }
 
 /** Browser client bundle: module-loader wrapped, platform modules external. */
