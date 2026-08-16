@@ -2,18 +2,27 @@
  * Peak-hours client plugin: binds the `peak-hours` settings scope (timezone +
  * enabled) and mounts the single DOM surface — the sidebar status row.
  *
+ * Fully standalone: it depends only on the dsh platform (the runtime settings
+ * scope and the official `settings.plugin.item` card slot), never on any
+ * dsh-web-ui sibling plugin. The settings card registers into the core
+ * `settings.plugin.item` slot, so it appears on the standard Plugin
+ * configuration page with no group-plugin prerequisite.
+ *
  * Failure policy: DOM mounting problems are logged, never thrown — the web
  * shell fails the whole boot when a plugin apply throws, and an external
  * plugin must not take the GUI down.
  */
 
-import type { ClientContext, SettingsScope, SettingsScopeSpec } from '@deepseek-ai/dsh-client-runtime/client'
+import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
 import type {} from '@deepseek-ai/dsh-client-ui-slots'
 // Type-only: pulls the locale plugin's Context merge (ctx.locale) and its
 // LocaleNamespaceMap merge table.
 import type {} from '@deepseek-ai/dsh-client-locale/client'
 // Type-only: pulls the settings-surface Context merge (ctx.settingsScope).
 import type {} from '@deepseek-ai/dsh-client-ui-settings/client'
+// Type-only: pulls the official `settings.plugin.item` SlotMap merge and its
+// owner share (declared by the core plugins-settings section).
+import type {} from '@deepseek-ai/dsh-client-ui-settings-plugins/client'
 import { claimPeakHoursApply, releasePeakHoursApply } from './apply-guard.ts'
 import { mountSidebarEntry } from './sidebar-entry.ts'
 import { PeakHoursSettingsCard, PeakHoursSettingsCardController, type PeakHoursSettings } from './PeakHoursSettingsCard.tsx'
@@ -29,33 +38,6 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
   interface LocaleNamespaceMap {
     /** Peak-hours surface copy. */
     'peak-hours': PeakHoursKey
-  }
-
-  interface SlotMap {
-    /**
-     * The child slot the Web UI plugin group declares; this card registers
-     * into the group instead of the top-level plugin list. Spelled here with
-     * the same shape so this package can register without depending on the
-     * sibling UI package.
-     */
-    'web-ui.plugin.item': { kind: 'list'; scope: 'root'; owner: SettingsPluginItemOwnerProps }
-  }
-}
-
-/** Owner share of a plugin card (the section supplies nothing). */
-export interface SettingsPluginItemOwnerProps {
-  /** Marker field: card owner props are intentionally empty. */
-  children?: never
-}
-
-declare module '@deepseek-ai/cordis' {
-  interface Context {
-    /**
-     * Optional rc.6 compatibility binder provided by dsh-web-ui-settings;
-     * absent when that group plugin is not installed, so callers fall back to
-     * the official settings scope.
-     */
-    webUiSettings?: { bind<S>(spec: SettingsScopeSpec<S>): SettingsScope<S> }
   }
 }
 
@@ -76,14 +58,13 @@ export function apply(ctx: ClientContext): void {
   ctx.effect(() => ctx.locale.register(NS, { zh, en }), 'peak-hours: dictionaries')
 
   // Plugin configuration card: one staged form over the `peak-hours` settings
-  // namespace, contributed to the Web UI plugin group.
-  const binder = ctx.get('webUiSettings') ?? ctx.settingsScope
-  const settingsScope = binder.bind<PeakHoursSettings>({ namespace: PEAK_HOURS_NS })
+  // namespace, contributed to the core Plugin configuration page.
+  const settingsScope = ctx.settingsScope.bind<PeakHoursSettings>({ namespace: PEAK_HOURS_NS })
   const settingsCard = new PeakHoursSettingsCardController(settingsScope)
-  ctx.slots.inject('web-ui.plugin.item', () => ctx.slots.register({
-    name: 'web-ui.plugin.item',
+  ctx.slots.inject('settings.plugin.item', () => ctx.slots.register({
+    name: 'settings.plugin.item',
     id: 'peak-hours',
-    order: 120,
+    order: 130,
     locale: NS,
     inject: () => settingsCard.inject(),
   }, PeakHoursSettingsCard))

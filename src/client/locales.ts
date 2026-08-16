@@ -12,7 +12,7 @@ export const zh = {
   'entry.countdownToPeak': '距高峰 {time}',
   'entry.countdownToEnd': '距结束 {time}',
   'entry.aria': '高峰时段状态',
-  // 插件设置卡片（web-ui.plugin.item 席位）。
+  // 插件设置卡片（settings.plugin.item 席位）。
   'settings.title': '高峰时段',
   'settings.description': '控制侧边栏高峰状态与倒计时的显示。',
   'settings.enabled': '启用高峰时段提示',
@@ -43,7 +43,7 @@ export const en: Record<keyof typeof zh, string> = {
   'entry.countdownToPeak': 'Peak in {time}',
   'entry.countdownToEnd': 'Ends in {time}',
   'entry.aria': 'Peak-hours status',
-  // Plugin settings card (the `web-ui.plugin.item` seat).
+  // Plugin settings card (the `settings.plugin.item` seat).
   'settings.title': 'Peak Hours',
   'settings.description': 'How the sidebar peak-hours status and countdown display.',
   'settings.enabled': 'Enable the peak-hours status',

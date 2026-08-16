@@ -28,7 +28,7 @@ Or add to `~/.dsh/profiles/<name>/package.json`:
 
 ## Settings
 
-The `peak-hours` settings namespace has two fields, editable from the Web UI plugin group's settings page (when the group settings plugin is present) or directly in `~/.dsh/settings.yaml`:
+The plugin is standalone: it depends only on the dsh platform, never on another dsh-web-ui plugin. The `peak-hours` settings namespace has two fields, editable from the standard Plugin configuration page (Settings → Plugins → Plugin configuration) or directly in `~/.dsh/settings.yaml`:
 
 | field | default | meaning |
 |---|---|---|

@@ -1,7 +1,8 @@
 /**
  * The peak-hours settings card: the master switch and the IANA timezone the
- * peak-hour clock reads. Registers into the `web-ui.plugin.item` slot the Web
- * UI plugin group renders, bound to the `peak-hours` settings namespace.
+ * peak-hour clock reads. Registers into the core `settings.plugin.item` slot
+ * the Plugin configuration page renders, bound to the `peak-hours` settings
+ * namespace.
  */
 
 import type { InjectFace, PropsLocale, PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots'
@@ -83,7 +84,7 @@ export class PeakHoursSettingsCardController {
 
 /** Props the renderer binds for the peak-hours card. */
 export type PeakHoursSettingsCardProps =
-  PropsRuntime<'web-ui.plugin.item'>
+  PropsRuntime<'settings.plugin.item'>
   & PropsLocale<'peak-hours'>
   & InjectFace<PeakHoursSettingsCardFace>
 

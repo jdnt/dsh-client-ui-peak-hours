@@ -28,7 +28,7 @@ dsh plugin --profile <name> add link:<本包路径>
 
 ## 设置
 
-`peak-hours` 设置命名空间有两个字段，可在 Web UI 插件组设置页（安装了组设置插件时）或直接改 `~/.dsh/settings.yaml`：
+本插件可独立运行，只依赖 dsh 平台，不依赖任何其它 dsh-web-ui 插件。`peak-hours` 设置命名空间有两个字段，可在标准「插件配置」页（设置 → 插件 → 插件配置）或直接改 `~/.dsh/settings.yaml`：
 
 | 字段 | 默认 | 含义 |
 |---|---|---|
