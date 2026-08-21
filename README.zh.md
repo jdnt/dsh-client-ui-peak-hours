@@ -1,4 +1,4 @@
-# @linxin666/dsh-client-ui-peak-hours
+# @jdnt/dsh-client-ui-peak-hours
 
 [English](README.md) | 中文
 
@@ -8,22 +8,20 @@ DSH Web GUI 的高峰时段状态插件：在侧边栏「新会话」按钮正�
 
 ## 挂载方式
 
-侧边栏 shell 没有暴露给外部插件注册的槽位（`sidebar.workspaces` / `sidebar.settings` 都是单占位），因此沿用 [task-board](https://github.com/zhu1090093659/dsh-web-ui) / ssh 的 DOM 级扩展先例：状态行是插入到 New Session 按钮之后的纯 DOM，用 `MutationObserver` 在 React 重渲染顶掉它时自愈重插。它不是 React 树，因此不会干扰 shell 的协调。
+侧边栏 shell 没有暴露给外部插件注册的槽位（`sidebar.workspaces` / `sidebar.settings` 都是单占位），因此沿用其它 dsh 侧边栏插件的 DOM 级扩展先例：状态行是插入到 New Session 按钮之后的纯 DOM，用 `MutationObserver` 在 React 重渲染顶掉它时自愈重插。它不是 React 树，因此不会干扰 shell 的协调。
 
 ## 安装
 
+从 git 地址安装（自包含——`lib/` 已提交，安装时无需构建）：
+
 ```sh
-dsh plugin --profile <name> add link:<本包路径>
+dsh plugin --profile web add github:jdnt/dsh-client-ui-peak-hours
 ```
 
-或在 `~/.dsh/profiles/<name>/package.json` 中：
+或从本地目录安装：
 
-```json
-{
-  "dependencies": {
-    "@linxin666/dsh-client-ui-peak-hours": "workspace:*"
-  }
-}
+```sh
+dsh plugin --profile web add link:<本包路径>
 ```
 
 ## 设置

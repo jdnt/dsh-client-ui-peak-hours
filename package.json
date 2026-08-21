@@ -1,5 +1,5 @@
 {
-  "name": "@linxin666/dsh-client-ui-peak-hours",
+  "name": "@jdnt/dsh-client-ui-peak-hours",
   "description": "Peak-hours status for the dsh web GUI: a sidebar entry below New Session that shows whether it is currently Beijing peak hours (09:00–12:00, 14:00–18:00) with a per-second countdown. Hot-pluggable — mounted via ~/.dsh/cordis.patch.yml + a profile node_modules symlink, no dsh source changes.",
   "version": "0.1.0",
   "type": "module",
@@ -47,12 +47,12 @@
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "^4.0.1",
-    "@deepseek-ai/dsh-client-locale": "^0.1.0-rc.6",
-    "@deepseek-ai/dsh-client-runtime": "^0.1.0-rc.6",
-    "@deepseek-ai/dsh-client-ui-settings": "^0.1.0-rc.6",
-    "@deepseek-ai/dsh-client-ui-settings-plugins": "^0.1.0-rc.6",
-    "@deepseek-ai/dsh-client-ui-slots": "^0.1.0-rc.6",
-    "@deepseek-ai/dsh-settings": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-client-locale": "^0.1.1-rc.1",
+    "@deepseek-ai/dsh-client-runtime": "^0.1.1-rc.1",
+    "@deepseek-ai/dsh-client-ui-settings": "^0.1.1-rc.1",
+    "@deepseek-ai/dsh-client-ui-settings-plugins": "^0.1.1-rc.1",
+    "@deepseek-ai/dsh-client-ui-slots": "^0.1.1-rc.1",
+    "@deepseek-ai/dsh-settings": "^0.1.1-rc.1",
     "@types/react": "~18.3.1",
     "@types/react-dom": "^18.3.5",
     "jsdom": "^25.0.0",
@@ -76,7 +76,7 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zhu1090093659/dsh-web-ui.git"
+    "url": "https://github.com/jdnt/dsh-client-ui-peak-hours.git"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && tsdown",

@@ -61,10 +61,11 @@ export function apply(ctx: ClientContext): void {
   // namespace, contributed to the core Plugin configuration page.
   const settingsScope = ctx.settingsScope.bind<PeakHoursSettings>({ namespace: PEAK_HOURS_NS })
   const settingsCard = new PeakHoursSettingsCardController(settingsScope)
+  // `settings.plugin.item` is a keyed slot since dsh 0.1.1: the `key` is the
+  // settings namespace the card edits (the tab dispatches each namespace).
   ctx.slots.inject('settings.plugin.item', () => ctx.slots.register({
     name: 'settings.plugin.item',
-    id: 'peak-hours',
-    order: 130,
+    key: PEAK_HOURS_NS,
     locale: NS,
     inject: () => settingsCard.inject(),
   }, PeakHoursSettingsCard))

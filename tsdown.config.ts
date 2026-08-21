@@ -15,7 +15,7 @@ import { dirname, resolve, sep } from 'node:path'
 import { transform } from 'lightningcss'
 import type { UserConfig } from 'tsdown'
 
-const ID = '@linxin666/dsh-client-ui-peak-hours'
+const ID = '@jdnt/dsh-client-ui-peak-hours'
 
 /** Externals the browser bundle resolves from the loader module table at runtime. */
 const CLIENT_EXTERNALS = [

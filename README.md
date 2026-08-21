@@ -1,4 +1,4 @@
-# @linxin666/dsh-client-ui-peak-hours
+# @jdnt/dsh-client-ui-peak-hours
 
 English | [中文](README.zh.md)
 
@@ -8,22 +8,20 @@ Peak windows are fixed on the clock: **09:00–12:00** and **14:00–18:00**, in
 
 ## How it mounts
 
-The sidebar shell exposes no slot an external plugin can register into (`sidebar.workspaces` / `sidebar.settings` are single-occupant), so — following the [task-board](https://github.com/zhu1090093659/dsh-web-ui) / ssh precedent of DOM-level extension — the status row is plain DOM inserted after the New Session button, with a `MutationObserver` that re-inserts it when a React re-render displaces it. The row is not a React tree, so it never disturbs the shell's reconciliation.
+The sidebar shell exposes no slot an external plugin can register into (`sidebar.workspaces` / `sidebar.settings` are single-occupant), so — following the DOM-level extension precedent used by other dsh sidebar plugins — the status row is plain DOM inserted after the New Session button, with a `MutationObserver` that re-inserts it when a React re-render displaces it. The row is not a React tree, so it never disturbs the shell's reconciliation.
 
 ## Install
 
+From git (self-contained — `lib/` is committed, no build step on install):
+
 ```sh
-dsh plugin --profile <name> add link:<path-to-this-package>
+dsh plugin --profile web add github:jdnt/dsh-client-ui-peak-hours
 ```
 
-Or add to `~/.dsh/profiles/<name>/package.json`:
+Or from a local checkout:
 
-```json
-{
-  "dependencies": {
-    "@linxin666/dsh-client-ui-peak-hours": "workspace:*"
-  }
-}
+```sh
+dsh plugin --profile web add link:<path-to-this-package>
 ```
 
 ## Settings
