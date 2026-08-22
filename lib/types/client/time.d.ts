@@ -1,8 +1,9 @@
 /**
  * Pure peak-hours time computation. Peak windows are fixed on the clock:
- * 09:00–12:00 and 14:00–18:00, interpreted in the configured IANA timezone
- * (default Asia/Shanghai = UTC+8, no DST). Every function is pure over a
- * `Date` plus a timezone string, so it is unit-testable without the DOM.
+ * 09:00–12:00 and 14:00–18:00 on weekdays, interpreted in the configured IANA
+ * timezone (default Asia/Shanghai = UTC+8, no DST). Saturday and Sunday are
+ * non-peak all day. Every function is pure over a `Date` plus a timezone
+ * string, so it is unit-testable without the DOM.
  */
 /** IANA timezone used when none (or an invalid one) is configured. */
 export declare const DEFAULT_TIMEZONE = "Asia/Shanghai";
@@ -12,7 +13,7 @@ export interface PeakState {
     peak: boolean;
     /**
      * Seconds until the next boundary: peak → the current window's end,
-     * non-peak → the next window's start (rolling past midnight).
+     * non-peak → the next window's start (rolling past midnight and weekends).
      */
     countdownSeconds: number;
 }
@@ -30,7 +31,16 @@ export declare function resolveTimeZone(timezone: string | undefined): string;
  */
 export declare function secondsInTimeZone(now: Date, timeZone: string): number;
 /**
+ * Day-of-week for `now` interpreted in `timeZone`, as `Date.getDay()` would
+ * return it (0 = Sunday … 6 = Saturday).
+ * @param now - the instant to read.
+ * @param timeZone - the IANA timezone to read it in.
+ * @returns 0..6.
+ */
+export declare function weekdayInTimeZone(now: Date, timeZone: string): number;
+/**
  * Classify one instant into peak/non-peak plus the seconds to the next boundary.
+ * Weekends are non-peak all day.
  * @param now - the instant to classify.
  * @param timeZone - the IANA timezone to read it in.
  * @returns the resolved state.

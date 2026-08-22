@@ -1,8 +1,8 @@
 /**
- * Pure time-logic behavior: peak/non-peak classification, countdown
- * direction, formatting, and timezone fallback. Uses the UTC timezone so the
- * fixed clock windows (09:00–12:00, 14:00–18:00) are asserted against
- * deterministic instants.
+ * Pure time-logic behavior: peak/non-peak classification, weekend handling,
+ * countdown direction, formatting, and timezone fallback. Uses the UTC
+ * timezone so the fixed clock windows (09:00–12:00, 14:00–18:00 on weekdays)
+ * are asserted against deterministic instants. 2024-01-01 is a Monday.
  */
 import { describe, expect, it } from 'vitest'
 import {
@@ -12,7 +12,7 @@ import {
 
 const at = (iso: string): Date => new Date(iso)
 
-describe('classifyPeak (UTC clock, fixed windows)', () => {
+describe('classifyPeak (UTC clock, weekdays)', () => {
   it('treats 08:59:59 as non-peak counting down to the 09:00 start', () => {
     expect(classifyPeak(at('2024-01-02T08:59:59Z'), 'UTC')).toEqual({
       peak: false,
@@ -48,10 +48,33 @@ describe('classifyPeak (UTC clock, fixed windows)', () => {
     })
   })
 
-  it('treats 18:00:00 as non-peak rolling to tomorrow 09:00', () => {
+  it('treats Tuesday 18:00 as non-peak rolling to Wednesday 09:00', () => {
     expect(classifyPeak(at('2024-01-02T18:00:00Z'), 'UTC')).toEqual({
       peak: false,
       countdownSeconds: 15 * 3600,
+    })
+  })
+})
+
+describe('classifyPeak (UTC clock, weekends)', () => {
+  it('treats Friday 18:00 as non-peak rolling over the weekend to Monday 09:00', () => {
+    expect(classifyPeak(at('2024-01-05T18:00:00Z'), 'UTC')).toEqual({
+      peak: false,
+      countdownSeconds: 63 * 3600,
+    })
+  })
+
+  it('treats Saturday 10:00 (inside the morning window) as non-peak', () => {
+    expect(classifyPeak(at('2024-01-06T10:00:00Z'), 'UTC')).toEqual({
+      peak: false,
+      countdownSeconds: 47 * 3600,
+    })
+  })
+
+  it('treats Sunday 15:00 (inside the afternoon window) as non-peak', () => {
+    expect(classifyPeak(at('2024-01-07T15:00:00Z'), 'UTC')).toEqual({
+      peak: false,
+      countdownSeconds: 18 * 3600,
     })
   })
 })
